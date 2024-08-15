@@ -1,5 +1,6 @@
 from parsing_rialcom.WebParser import WebParser
 from parsing_rialcom.DataExtractor import DataExtractor
+from parsing_rialcom.ExcelTable import ExcelTable
 
 if __name__ == "__main__":
 
@@ -9,18 +10,28 @@ if __name__ == "__main__":
     page_content = parser.get_page_content()
 
     extractor = DataExtractor(page_content)
-    tariffs_data = extractor.find_info_sectional_tariff()
+
+    simple_tariffs = extractor.find_info_simple_tariff()
+    sectional_tariffs = extractor.find_info_sectional_tariff()
 
     # for tariff in tariffs_data:
     #     print(tariff, end='\n' * 2)
 
-    print('\n\n')
-    for key, value in tariffs_data.items():
-        print(key)
-        for elem in value:
-            print(elem)
-        print('\n\n')
+    # print('\n\n')
+    # for key, value in tariffs_data.items():
+    #     print(key)
+    #     for elem in value:
+    #         print(elem)
+    #     print('\n\n')
+    #
+    # print(tariffs_data)
 
-    print(tariffs_data)
+    headers = ["Название тарифа", "Количество каналов", "Скорость доступа", "Абонентная плата"]
+    excel_table = ExcelTable("tariffs.xlsx", headers, output_dir='../samples')
 
-    #print(extractor.soup)
+    excel_table.update_table(simple_tariffs['apartment_house'])
+    excel_table.update_table(sectional_tariffs['apartment_house'])
+    excel_table.update_table(simple_tariffs['private_house'])
+    excel_table.update_table(sectional_tariffs['private_house'])
+
+    excel_table.save_table()

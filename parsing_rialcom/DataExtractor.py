@@ -7,11 +7,6 @@ class DataExtractor:
         #html_content = re.sub(r'>\s+<', '><', html_content.replace('\n', ''))
         self._soup = BeautifulSoup(html_content, 'html.parser')
 
-    def extract_tariffs_data(self):
-        tariff = []
-
-        return tariff
-
     def find_info_simple_tariff(self):
         tables_tariff = self._soup.find_all('table',
                                             class_='table table-sm table-striped table-borderless table-responsive-sm')
@@ -75,7 +70,7 @@ class DataExtractor:
                     channel = int(channel_re.group())
 
                 for j in range(len(names_interactive_tv)):
-                    tariffs_info.append([clear_row[0].split(' (')[0] + ' + ' + names_interactive_tv[j], channel, speed_interactive_tv[j], clear_row[j + 1]])
+                    tariffs_info.append([clear_row[0].split(' (')[0] + ' + ' + names_interactive_tv[j], channel, speed_interactive_tv[j], int(clear_row[j + 1])])
 
             if appartment_house:
                 sectional_tariff['apartment_house'] = tariffs_info
