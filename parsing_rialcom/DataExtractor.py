@@ -46,9 +46,9 @@ class DataExtractor:
         # We don't need the last table
         for table in tables_tariff[:2]:
             tariffs_info = []
-            rows = table.find_all('tr')
+            rows = table.find_all('tr')[1:]     # Skipping the table header
 
-            for row in rows[1:]:
+            for row in rows:
                 clear_row = row.text.strip().split('\n')
                 speed = int(re.search(r'\b\d+\b', clear_row[3]).group())
                 price = int(re.search(r'\b\d+\b', clear_row[1]).group())
@@ -89,10 +89,7 @@ class DataExtractor:
 
             # Get the name and speed of the tariff from the column for convenient interaction with them
             names_interactive_tv = rows[0].text.strip().split('\n')
-            speed_interactive_tv = []
-            for name in names_interactive_tv:
-                speed = re.search(r'\b\d+\b', name)
-                speed_interactive_tv.append(int(speed.group()))
+            speed_interactive_tv = [int(re.search(r'\b\d+\b', name).group()) for name in names_interactive_tv]
 
             # For convenient separation of private and apartment buildings we will add a suffix '_ч'
             if not is_appartment_house:
@@ -102,11 +99,13 @@ class DataExtractor:
                 clear_row = row.text.strip().split('\n')
                 channel_re = re.search(r'\b\d+\b', clear_row[0])
 
+                # For private houses the number of channels is not specified
                 if channel_re is None:
                     channel = sectional_tariff['apartment_house'][i * AMOUNT_APARTMENT_TV].channels
                 else:
                     channel = int(channel_re.group())
 
+                # For each line with a standard tariff there are additional tariffs indicated in the columns
                 for j in range(len(names_interactive_tv)):
                     tariffs_info.append(InternetTariff(clear_row[0].split(' (')[0] + ' + ' + names_interactive_tv[j],
                                                        channel, speed_interactive_tv[j], int(clear_row[j + 1])))
