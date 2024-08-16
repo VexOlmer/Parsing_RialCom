@@ -14,20 +14,9 @@ if __name__ == "__main__":
     simple_tariffs = extractor.find_info_simple_tariff()
     sectional_tariffs = extractor.find_info_sectional_tariff()
 
-    # for tariff in tariffs_data:
-    #     print(tariff, end='\n' * 2)
-
-    # print('\n\n')
-    # for key, value in tariffs_data.items():
-    #     print(key)
-    #     for elem in value:
-    #         print(elem)
-    #     print('\n\n')
-    #
-    # print(tariffs_data)
-
     headers = ["Название тарифа", "Количество каналов", "Скорость доступа", "Абонентная плата"]
-    excel_table = ExcelTable("tariffs.xlsx", headers, output_dir='../samples')
+    filename = "tariffs.xlsx"
+    excel_table = ExcelTable(filename, headers, output_dir='../samples')
 
     excel_table.update_table(simple_tariffs['apartment_house'])
     excel_table.update_table(sectional_tariffs['apartment_house'])
